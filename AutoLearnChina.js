@@ -24,6 +24,9 @@ ui.layout(
         <frame height="50" gravity="center">
             <text text="阅读文章、视听学习、收藏、分享、订阅、评论、本地频道" gravity="center"/>
         </frame>
+        <frame height="80" gravity="center">
+            <text text="坚持把学习贯彻习近平总书记系列重要讲话精神作为重大政治任务，认真学习党的先进理论与指导思想，请勿利用本软件投机取巧" gravity="center"/>
+        </frame>
         <frame height="50" gravity="center">
             <text text="Copyright©2020 by Txy 一岸流年1998" gravity="center"/>
         </frame>
@@ -239,15 +242,17 @@ function doUnfinishedTask(){
             else if(task.title=='每日答题'){
                 sleep(2000)
                 toastLog('开始执行每日答题任务(暂未开发)')
-                
+                continue;
             }
             else if(task.title=='每周答题'){
                 toastLog('开始执行每周答题任务(暂未开发)')
                 sleep(2000)
+                continue;
             }
             else if(task.title=='专项答题'){
                 toastLog('开始执行专项答题任务(暂未开发)')
                 sleep(2000)
+                continue;
             }
             else if(task.title=='订阅'){
                 rest_num = task.targetIntegral-task.getIntegral;
