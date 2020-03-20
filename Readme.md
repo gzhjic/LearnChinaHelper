@@ -4,6 +4,8 @@
 
 本文档的目的是在经过《学习强国》安卓脚本的实战开发后，梳理个人在学习Auto.js过程中的知识点，并对每一个功能进行思路讲解和代码介绍，希望能通过本项目帮助学习Auto.js的人更进一步理解脚本开发步骤和原理。
 
+如果对您有帮助，欢迎您star⭐一下小星星~
+
 **仓库内容：**
 
 强国助手.apk —— 脚本打包后封装好的安卓软件
@@ -90,11 +92,11 @@ Readme.md —— 《强国助手》说明文档
 
 1.软件主页：
 
-<img src="C:\Users\16616\Desktop\学习强国脚本测试\LearnChinaHelper\Images\1584714733344.png" width="300" />
+<img src="./Images/1584714733344.png" width="300" />
 
 2.使用过程展示：(可见Image文件夹中的视频文件)
 
-<img src="C:\Users\16616\Desktop\学习强国脚本测试\LearnChinaHelper\Images\使用过程展示.gif" width="300" />
+<img src="./Images/使用过程展示.gif" width="300" />
 
 
 
