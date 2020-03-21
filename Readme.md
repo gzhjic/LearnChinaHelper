@@ -198,14 +198,14 @@ ui.layout(
             <text text="---------------------------------------------------------------------------------------------------------------------------------" gravity="center"/>
         </frame>
         <vertical>
-        <text text="是否执行文章学习时长任务：(预计花费12分钟)"/>
+        <text text="是否执行文章学习时长任务：(预计最多花费12分钟)"/>
         <radiogroup id="long_read">
             <radio id="yes_read"  text="是"></radio>
             <radio  id="no_read" text="否" checked = "true"></radio>
         </radiogroup>
         </vertical>
         <vertical>
-        <text text="是否执行视听学习时长任务：(预计花费18分钟)"/>
+        <text text="是否执行视听学习时长任务：(预计最多花费18分钟)"/>
         <radiogroup id="long_watch">
             <radio id="yes_watch"  text="是"></radio>
             <radio  id="no_watch" text="否" checked = "true"></radio>
@@ -214,9 +214,11 @@ ui.layout(
         <frame height="20" gravity="center">
             <text text="---------------------------------------------------------------------------------------------------------------------------------" gravity="center"/>
         </frame>
-        <button id="start" text="开始运行"/>
+        <button id="start" text="开始运行" textColor="blue" textStyle="bold"/>
+        <button id="stop" text="停止运行" />
     </vertical>
 );
+
 ui.yes_read.on("check",function(check){
     if(check){
         form.isLongRead= true;
@@ -248,6 +250,7 @@ ui.autoService.on("check", function(checked) {
         auto.service.disableSelf();
     }
 });
+
 // 当用户回到本界面时，resume事件会被触发
 ui.emitter.on("resume", function() {
     // 此时根据无障碍服务的开启情况，同步开关的状态
@@ -262,6 +265,13 @@ ui.start.on("click", function(){
     }
 
     main();
+});
+
+ui.stop.on("click",function(){
+    threads.shutDownAll();
+    engines.stopAll();
+    exit();
+    toast("已终止执行脚本");
 });
 ```
 
@@ -288,12 +298,16 @@ function main() {
             getTaskList(); // 获取任务列表
             doUnfinishedTask(); //执行当日未完成的任务
             doExtraTask();
+            back();//回到手机主页
+            sleep(2000);
         } catch (error) {
             log(error)
             toast("出现异常,请关闭应用重新执行脚本！");
             exit(); // 有异常退出，结束脚本
         }
         toastLog("运行结束,脚本自动退出...");
+        threads.shutDownAll();
+        engines.stopAll();
         exit();
     });
 }
@@ -336,7 +350,9 @@ function getTaskList() {
         }
     });
     if (!taskInfoList.length) {
-        toastLog('获取任务失败！');
+        toastLog('获取任务失败！请关闭应用并重启脚本...');
+        threads.shutDownAll();
+        engines.stopAll();
         exit(); // 有异常退出，结束脚本
     } else {
         toastLog("成功获取任务列表,退到首页");
@@ -356,7 +372,7 @@ function getTaskList() {
 ```JavaScript
 function doUnfinishedTask(){
     var flag = 0;//判断是否完成所有任务满分的标志
-    var read_article_flag = 1 //判断阅读文章任务是否已完成，作为参数传入视听学习任务的new_vedio_list用于控件寻找
+    var read_article_flag = 2 //判断阅读文章任务是否已完成，作为参数传入视听学习任务的new_vedio_list用于控件寻找
     for(i=0;i<taskInfoList.length;i++){
         var task = taskInfoList[i];
         // log(task);
@@ -367,12 +383,12 @@ function doUnfinishedTask(){
             if(task.title=='阅读文章'){
                 rest_num = task.targetIntegral-task.getIntegral;
                 read_article_flag = 2;
-                readArticle(rest_num,8);//默认阅读8s
+                readArticle(rest_num,8,false);//默认阅读8s，执行短时阅读任务
                 continue;
             }
             else if(task.title=='视听学习'){
                 rest_num = task.targetIntegral-task.getIntegral;
-                learnVideo(rest_num,read_article_flag,8);//默认观看8s
+                learnVideo(rest_num,read_article_flag,8,false);//默认观看8s,执行短时视听任务
                 continue;
             }
             else if(task.title=='每日答题'){
@@ -433,7 +449,7 @@ function doUnfinishedTask(){
 第一个参数num是当前剩余阅读文章数（下同），第二个参数time则是在详情页的停留时间。
 
 ```javascript
-function readArticle(num,time){
+function readArticle(num,time,isLong){
     sleep(1000);
     toastLog('开始执行阅读文章任务...')
     //点击要闻
@@ -471,15 +487,29 @@ function readArticle(num,time){
                                     toast("还剩"+left_time+"s阅读时间...");
                                 }
                             }
-                            
-                            className("android.widget.ImageView").depth(11).findOne().click();
+                            back();
+                            // className("android.widget.ImageView").depth(11).findOne().click();
                             sleep(2000);
                             //返回之后看积分是否变化，若未变化，num++
                             var new_score = id("comm_head_xuexi_score").findOne().getText();
                             if(new_score==origin_score)
                             {
-                                num++;
-                                toastLog("检测积分未发生变化...向下翻页并重置剩余阅读篇数："+num);
+                                if(isLong)//如果是阅读时长任务
+                                {
+                                    num++;
+                                    toastLog("检测积分未发生变化...向下翻页并进行长时阅读");
+                                    pn = random(3,8);
+                                    for(var p=1;p<=pn;p++)//往下多滑动几次
+                                    {
+                                        newListView.scrollDown();
+                                        sleep(1000);
+                                    }
+                                }
+                                else
+                                {
+                                    num++;
+                                    toastLog("检测积分未发生变化...向下翻页并重置剩余阅读篇数："+num);
+                                }
                                 newListView.scrollDown();
                             }
                             else
@@ -503,14 +533,15 @@ function readArticle(num,time){
 
 视听学习模块：
 
-在此对方法中第二个参数进行详细解释，这是在我对控件的实际操作中发现的问题而不得已而为之的解决办法，如果我之前执行过阅读文章的方法，那么在视频列表页中的list控件会被覆盖，即：
+在此对方法中第二个参数进行详细解释，这是在我对控件的实际操作中发现的问题而不得已而为之的解决办法，如果我之前执行过阅读文章的方法，那么在视频列表页中的list控件会被覆盖，简单说，就是在执行阅读文章任务后会对控件位置造成一定改变，即：
 
 className("android.widget.ListView").depth(20).findOnce(read_article_flag);
 
 read_article_flag判断阅读文章任务是否已完成，作为参数传入视听学习任务的new_vedio_list用于控件寻找。
 
 ```javascript
-function learnVideo(num,read_article_flag,time){
+function learnVideo(num,read_article_flag,time,isLong){
+    log("read_article_flag:"+read_article_flag);
     sleep(1000);
     toastLog('开始执行视听学习任务...');
     //进入电视台频道
@@ -520,8 +551,9 @@ function learnVideo(num,read_article_flag,time){
     log("origin_score:"+origin_score)
     //进入第一频道
     className("android.widget.TextView").text("第一频道").findOne().parent().click();
+    var new_vedio_list = className("android.widget.ListView").depth(20).findOnce(read_article_flag);
     while(num>0){
-        var new_vedio_list = className("android.widget.ListView").depth(20).findOnce(read_article_flag);
+        new_vedio_list = className("android.widget.ListView").depth(20).findOnce(read_article_flag);
         log('new_vedio_list:'+new_vedio_list)
         if(new_vedio_list!=null)
         {
@@ -546,14 +578,30 @@ function learnVideo(num,read_article_flag,time){
                                 }
                             }
                             //点击返回
-                            className("android.widget.ImageView").depth(13).findOne().click()
+                            // className("android.widget.ImageView").depth(13).findOne().click()
+                            back();
                             sleep(2000);
                             //返回之后看积分是否变化，若未变化，num++
                             var new_score = id("comm_head_xuexi_score").findOne().getText();
                             if(new_score==origin_score)
                             {
-                                num++;
-                                toastLog("检测积分未发生变化...向下翻页并重置剩余视听次数："+num);
+                                if(isLong)//如果是视听时长任务
+                                {
+                                    num++;
+                                    toastLog("检测积分未发生变化...向下翻页并继续进行长时视听");
+                                    pn = random(3,8);
+                                    log("pn:"+pn);
+                                    for(var p=1;p<=pn;p++)//往下多滑动几次
+                                    {
+                                        new_vedio_list.scrollDown();
+                                        sleep(1000);
+                                    }
+                                }
+                                else
+                                {
+                                    num++;
+                                    toastLog("检测积分未发生变化...向下翻页并重置剩余视听次数："+num);
+                                }
                                 new_vedio_list.scrollDown();
                             }
                             else
@@ -564,6 +612,21 @@ function learnVideo(num,read_article_flag,time){
                     }
                 });
                 // break;
+            }
+        }
+        else
+        {
+            if(read_article_flag==2)
+            {
+                read_article_flag = 1;
+                new_vedio_list = className("android.widget.ListView").depth(20).findOnce(read_article_flag);
+                log("read_article_flag = 1的new_vedio_list："+new_vedio_list)
+            }
+            else
+            {
+                read_article_flag = 2;
+                new_vedio_list = className("android.widget.ListView").depth(20).findOnce(read_article_flag);
+                log("read_article_flag = 2的new_vedio_list："+new_vedio_list)
             }
             new_vedio_list.scrollDown();
         } 
