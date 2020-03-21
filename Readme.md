@@ -145,6 +145,8 @@ oppo A59s（安卓5.1）
 
 ## 四、如何进行迭代式增量开发？
 
+参与贡献（内附提交方法）：https://github.com/Alivon/Panda-Learning/blob/master/CONTRIBUTING.md
+
 ### 1.了解什么是Auto.js
 
 **Auto.js**是一个支持无障碍服务的Android平台上的JavaScript IDE，可以编写各种自动化脚本，它主要有以下优点：
