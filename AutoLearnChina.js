@@ -9,6 +9,8 @@ ui.layout(
             <toolbar title="强国助手"/>
         </appbar>
         <Switch id="autoService" text="无障碍服务" checked="{{auto.service != null}}" padding="8 8 8 8" textSize="15sp"/>
+        <ScrollView>
+        <vertical>
         <frame height="50" gravity="center">
             <text text="*注意*" gravity="center" textSize="18sp" textColor="red" textStyle="bold"/>
         </frame>
@@ -52,6 +54,8 @@ ui.layout(
         </frame>
         <button id="start" text="开始运行" textColor="blue" textStyle="bold"/>
         <button id="stop" text="停止运行" />
+        </vertical>
+        </ScrollView>
     </vertical>
 );
 
