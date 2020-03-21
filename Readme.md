@@ -110,7 +110,7 @@ Readme.md —— 《强国助手》说明文档
 
 1.软件主页：
 
-<img src="./Images/1584714733344.png" width="300" />
+<img src="./Images/脚本主页.jpg" width="300" />
 
 2.使用过程展示：(可见Image文件夹中的视频文件)
 
