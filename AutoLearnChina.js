@@ -17,10 +17,10 @@ ui.layout(
         <frame>
             <text autoLink="web" gravity="center" text="项目说明文档: https://github.com/XiangyuTang/LearnChinaHelper"/>
         </frame>
-        <frame height="50" gravity="center">
+        <frame height="20" gravity="center">
             <text text="使用前请先开启本应用的无障碍服务和截图权限" gravity="center"/>
         </frame>
-        <frame height="50" gravity="center">
+        <frame height="20" gravity="center">
             <text text="脚本执行过程中请勿操作手机" gravity="center"/>
         </frame>
         <frame height="50" gravity="center">
@@ -46,7 +46,7 @@ ui.layout(
         </radiogroup>
         </vertical>
         <vertical>
-        <text text="是否执行视听学习时长任务：(预计最多花费18分钟)"/>
+        <text text="是否执行视听学习时长任务：(建议在wifi环境下执行，预计最多花费18分钟)"/>
         <radiogroup id="long_watch">
             <radio id="yes_watch"  text="是"></radio>
             <radio  id="no_watch" text="否" checked = "true"></radio>
