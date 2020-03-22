@@ -30,6 +30,8 @@ Images文件夹——存放演示图片和视频
 
 Auto.js官方API文档——字面意思
 
+autojs.apk——autojs手机开发IDE（版本：4.1.1 Alpha2）
+
 AutoLearnChina.js —— 核心脚本执行文件
 
 Readme.md —— 《强国助手》说明文档
