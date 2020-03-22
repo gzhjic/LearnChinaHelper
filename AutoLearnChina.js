@@ -14,6 +14,9 @@ ui.layout(
         <frame height="50" gravity="center">
             <text text="*注意*" gravity="center" textSize="18sp" textColor="red" textStyle="bold"/>
         </frame>
+        <frame>
+            <text autoLink="web" gravity="center" text="项目说明文档: https://github.com/XiangyuTang/LearnChinaHelper"/>
+        </frame>
         <frame height="50" gravity="center">
             <text text="使用前请先开启本应用的无障碍服务和截图权限" gravity="center"/>
         </frame>
@@ -310,15 +313,18 @@ function doUnfinishedTask(){
 function readArticle(num,time,isLong){
     sleep(1000);
     toastLog('开始执行阅读文章任务...')
+    //点击学习控件
+    id("home_bottom_tab_button_work").findOne().click();
+    sleep(1500);
     //点击要闻
     className("android.widget.TextView").text("要闻").findOne().parent().click();
     //先看右上角总积分，如果看完某文章，积分没变，说明该文章以前看过，不算有效文章，num不减
     var origin_score = id("comm_head_xuexi_score").findOne().getText();
     log("origin_score:"+origin_score)
-    
+    var newListView = className("android.widget.ListView").depth(20).findOnce(1);
     //阅读文章
     while(num>0){
-        var newListView = className("android.widget.ListView").depth(20).findOnce(1);
+        newListView = className("android.widget.ListView").depth(20).findOnce(1);
         log('newListView:'+newListView)
         if(newListView!=null)
         {
