@@ -322,6 +322,13 @@ function readArticle(num,time,isLong){
     var origin_score = id("comm_head_xuexi_score").findOne().getText();
     log("origin_score:"+origin_score)
     var newListView = className("android.widget.ListView").depth(20).findOnce(1);
+    if(newListView.find(text("播报"))!=null)
+    {
+        log('hhhh:'+newListView.find(text("播报")))
+    }
+    else{
+        log('没找到')
+    }
     //阅读文章
     while(num>0){
         newListView = className("android.widget.ListView").depth(20).findOnce(1);
