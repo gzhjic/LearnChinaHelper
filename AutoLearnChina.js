@@ -123,8 +123,9 @@ function main() {
     threads.start(function () {
         if(!requestScreenCapture()){
             toastLog("请先开启截图权限，以执行收藏任务！");
-            toastLog("运行结束,脚本自动退出...");
-            exit();
+            // toastLog("运行结束,脚本自动退出...");
+            // exit();
+            return;
         }
         toastLog("主程序开始运行");
         try {
@@ -206,7 +207,7 @@ function getTaskList() {
     taskInfoList = []; // 重置
     className("android.widget.ListView").findOne().children().forEach(function (child) {
         var list = child.find(className('android.view.View'));
-        log(list)
+        // log(list)
         if (list.length > 5) {
             var title = list.get(2).contentDescription;
             var content = list.get(4).contentDescription;
@@ -320,15 +321,114 @@ function readArticle(num,time,isLong){
     className("android.widget.TextView").text("要闻").findOne().parent().click();
     //先看右上角总积分，如果看完某文章，积分没变，说明该文章以前看过，不算有效文章，num不减
     var origin_score = id("comm_head_xuexi_score").findOne().getText();
+    sleep(1500);
+    log("origin_score:"+origin_score)
+    var newListView = className("android.widget.ListView").depth(20).findOne();
+    log('进入while前的newListView:'+newListView)
+    // var flag = 0;
+    // while(newListView==null)
+    // {
+    //     log("flag:"+flag)
+    //     newListView = className("android.widget.ListView").depth(20).findOnce();
+    //     flag++;
+    // }
+    // log(flag+"-----"+newListView)
+    
+    //阅读文章
+    while(num>0){
+        newListView = className("android.widget.ListView").depth(20).findOne();
+        log('newListView:'+newListView)
+        if(newListView!=null)
+        {
+            // log('newListView:'+newListView)
+            var newslist = newListView.children();
+            // log('list.length:'+newslist.length);
+            if (newslist.length > 0) 
+            {
+                newslist.forEach(function(item,index){
+                    if(index&&num>0){//index==0时是linearLayout控件，无法点击，也不是子项要闻
+                        sleep(2000);
+                        isClick = item.click()//进入新闻内容页
+                        if(isClick)
+                        {
+                            num--;
+                            toastLog("进行模拟阅读"+time+"s...剩余阅读篇数："+num);
+                            // waitForPackage("cn.xuexi.android");
+                            var f = 1;//防止用户的手机未开启消息通知，导致长时任务在页面上停留过久息屏
+                            for(var t=1;t<=time;t++)
+                            {
+                                sleep(1000);
+                                left_time = time-t;
+                                if(left_time%5==0)
+                                {
+                                    toast("还剩"+left_time+"s阅读时间...");
+                                    if(f){//加入滑屏操作防止息屏
+                                        scrollDown();
+                                        f = 0;
+                                    }
+                                    else{
+                                        scrollUp();
+                                        f = 1;
+                                    }
+                                }
+                            }
+                            back();
+                            // className("android.widget.ImageView").depth(11).findOne().click();
+                            sleep(2000);
+                            //返回之后看积分是否变化，若未变化，num++
+                            var new_score = id("comm_head_xuexi_score").findOne().getText();
+                            if(new_score==origin_score)
+                            {
+                                if(isLong)//如果是阅读时长任务
+                                {
+                                    num++;
+                                    toastLog("检测积分未发生变化...向下翻页并进行长时阅读");
+                                    pn = random(3,8);
+                                    for(var p=1;p<=pn;p++)//往下多滑动几次
+                                    {
+                                        newListView.scrollDown();
+                                        sleep(1000);
+                                    }
+                                }
+                                else
+                                {
+                                    num++;
+                                    toastLog("检测积分未发生变化...向下翻页并重置剩余阅读篇数："+num);
+                                }
+                                newListView.scrollDown();
+                            }
+                            else
+                            {
+                                origin_score = new_score;
+                            }
+                        }
+                    }
+                });
+                // break;
+            }
+            newListView.scrollDown();
+        } 
+    }
+    toastLog('阅读文章任务执行结束！d==(￣▽￣*)b')
+    //点击学习控件回到新闻首页
+    id("home_bottom_tab_button_work").findOne().click();
+    sleep(1000);
+};
+
+//备份
+function readArticle1(num,time,isLong){
+    sleep(1000);
+    toastLog('开始执行阅读文章任务...')
+    //点击学习控件
+    id("home_bottom_tab_button_work").findOne().click();
+    sleep(1500);
+    //点击要闻
+    className("android.widget.TextView").text("要闻").findOne().parent().click();
+    //先看右上角总积分，如果看完某文章，积分没变，说明该文章以前看过，不算有效文章，num不减
+    var origin_score = id("comm_head_xuexi_score").findOne().getText();
     log("origin_score:"+origin_score)
     var newListView = className("android.widget.ListView").depth(20).findOnce(1);
-    if(newListView.find(text("播报"))!=null)
-    {
-        log('hhhh:'+newListView.find(text("播报")))
-    }
-    else{
-        log('没找到')
-    }
+    
     //阅读文章
     while(num>0){
         newListView = className("android.widget.ListView").depth(20).findOnce(1);
@@ -424,12 +524,24 @@ function learnVideo(num,read_article_flag,time,isLong){
             {
                 newslist.forEach(function(item,index){
                     if(index&&num>0){//index==0时是linearLayout控件，无法点击，也不是子项要闻
-                        sleep(2000);
+                        sleep(1000);
                         isClick = item.click()//进入视频内容页
+                        sleep(2000);
                         if(isClick)
                         {
                             num--;
+                            //如果用户用的流量观看视频
+                            if(text("继续播放").exists()){
+                                toastLog("自动点击继续播放,将消耗用户流量...");
+                                className("android.widget.TextView").text("继续播放").findOne().click();
+                                sleep(1000);
+                            }
+                            else{
+                                toastLog("当前为wifi环境，自动播放...");
+                                sleep(1000);
+                            }
                             toastLog("进行模拟观看"+time+"s...剩余视听："+num+"次");
+                            var f = 1;
                             for(var t=1;t<=time;t++)
                             {
                                 sleep(1000);
@@ -437,6 +549,14 @@ function learnVideo(num,read_article_flag,time,isLong){
                                 if(left_time%5==0)
                                 {
                                     toast("还剩"+left_time+"s视听时间...");
+                                    if(f){//加入滑屏操作防止息屏
+                                        scrollDown();
+                                        f = 0;
+                                    }
+                                    else{
+                                        scrollUp();
+                                        f = 1;
+                                    }
                                 }
                             }
                             //点击返回
