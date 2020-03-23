@@ -6,57 +6,78 @@ var form = {
 ui.layout(
     <vertical>
         <appbar>
-            <toolbar title="强国助手"/>
+            <toolbar title="强国助手 V1.0.3"/>
         </appbar>
         <Switch id="autoService" text="无障碍服务" checked="{{auto.service != null}}" padding="8 8 8 8" textSize="15sp"/>
         <ScrollView>
         <vertical>
-        <frame height="50" gravity="center">
+        <frame height="40" gravity="center">
             <text text="*注意*" gravity="center" textSize="18sp" textColor="red" textStyle="bold"/>
         </frame>
-        <frame>
-            <text autoLink="web" gravity="center" text="项目说明文档: https://github.com/XiangyuTang/LearnChinaHelper"/>
-        </frame>
+        <card w="*" h="60" margin="10 5" cardCornerRadius="2dp"
+            cardElevation="1dp" gravity="center_vertical">
+            <vertical padding="18 8" h="auto">
+                <text text="项目说明文档: (请留意新版本的发布)" textColor="#222222" textSize="14sp"/>
+                <text autoLink="web" text="https://github.com/XiangyuTang/LearnChinaHelper "/>
+            </vertical>
+            <View bg="#f44336" h="*" w="10"/>
+        </card>
+        <card w="*" h="90" margin="10 5" cardCornerRadius="2dp"
+            cardElevation="1dp" gravity="center_vertical">
+            <vertical padding="18 8" h="auto">
+                <text text="1.首次安装请先开启无障碍服务和截图权限" textColor="#222222" textSize="14sp"/>
+                <text text="2.开始运行前请先关闭学习强国,由脚本运行后自动启动" textColor="#222222" textSize="14sp"/>
+                <text text="3.脚本执行过程中请勿操作手机" textColor="#222222" textSize="14sp"/>
+            </vertical>
+            <View bg="#f44336" h="*" w="10"/>
+        </card>
+        <card w="*" h="100" margin="10 5" cardCornerRadius="2dp"
+            cardElevation="1dp" gravity="center_vertical">
+            <vertical padding="18 8" h="auto">
+                <text text="当前版本强国助手支持的功能包括：(以下任务预计花费7分钟)" textColor="#222222" textSize="14sp"/>
+                <text text="阅读文章、视听学习、收藏、分享、订阅、评论、本地频道" textColor="#999999" textSize="14sp"/>
+            </vertical>
+            <View bg="#4caf50" h="*" w="10"/>
+        </card>
+        <card w="*" h="80" margin="10 5" cardCornerRadius="2dp"
+            cardElevation="1dp" gravity="center_vertical">
+            <vertical padding="18 8" h="auto">
+                <text text="坚持把学习贯彻习近平总书记系列重要讲话精神作为重大政治任务，认真学习党的先进理论与指导思想，请勿利用本软件投机取巧." textColor="#222222"/>
+            </vertical>
+            <View bg="#4caf50" h="*" w="10"/>
+        </card>
+        <card w="*" h="90" margin="10 5" cardCornerRadius="2dp"
+            cardElevation="1dp" gravity="center_vertical">
+            <vertical padding="18 8" h="auto">
+                <text text="是否执行文章学习时长任务：(预计最多花费12分钟)" textColor="#222222"/>
+                <radiogroup id="long_read">
+                        <radio id="yes_read"  text="是"></radio>
+                        <radio  id="no_read" text="否" checked = "true"></radio>
+                </radiogroup>
+            </vertical>
+            <View bg="#2196f3" h="*" w="10"/>
+        </card>
+        <card w="*" h="110" margin="10 5" cardCornerRadius="2dp"
+            cardElevation="1dp" gravity="center_vertical">
+            <vertical padding="18 8" h="auto">
+                <text text="是否执行视听学习时长任务：(建议在wifi环境下执行，预计最多花费18分钟)" textColor="#222222"/>
+                <radiogroup id="long_watch">
+                        <radio id="yes_watch"  text="是"></radio>
+                        <radio id="no_watch" text="否" checked = "true"></radio>
+                </radiogroup>
+            </vertical>
+            <View bg="#2196f3" h="*" w="10"/>
+        </card>
+        <linear gravity="center">
+            <button id="start" text="开始运行" style="Widget.AppCompat.Button.Colored" w="auto"/>
+            <button id="stop" text="停止运行"  w="auto"/>
+        </linear>
         <frame height="20" gravity="center">
-            <text text="使用前请先开启本应用的无障碍服务和截图权限" gravity="center"/>
-        </frame>
-        <frame height="20" gravity="center">
-            <text text="脚本执行过程中请勿操作手机" gravity="center"/>
-        </frame>
-        <frame height="50" gravity="center">
-            <text text="目前强国助手支持的功能包括：(以下任务预计花费7分钟)" gravity="center"/>
-        </frame>
-        <frame height="50" gravity="center">
-            <text text="阅读文章、视听学习、收藏、分享、订阅、评论、本地频道" gravity="center"/>
-        </frame>
-        <frame height="80" gravity="center">
-            <text text="坚持把学习贯彻习近平总书记系列重要讲话精神作为重大政治任务，认真学习党的先进理论与指导思想，请勿利用本软件投机取巧" gravity="center"/>
+            <text text="---------------------------------------------------------------------------------------------------------------------------------" gravity="center"/>
         </frame>
         <frame height="50" gravity="center">
             <text text="Copyright©2020 by Txy 一岸流年1998" gravity="center"/>
         </frame>
-        <frame height="20" gravity="center">
-            <text text="---------------------------------------------------------------------------------------------------------------------------------" gravity="center"/>
-        </frame>
-        <vertical>
-        <text text="是否执行文章学习时长任务：(预计最多花费12分钟)"/>
-        <radiogroup id="long_read">
-            <radio id="yes_read"  text="是"></radio>
-            <radio  id="no_read" text="否" checked = "true"></radio>
-        </radiogroup>
-        </vertical>
-        <vertical>
-        <text text="是否执行视听学习时长任务：(建议在wifi环境下执行，预计最多花费18分钟)"/>
-        <radiogroup id="long_watch">
-            <radio id="yes_watch"  text="是"></radio>
-            <radio  id="no_watch" text="否" checked = "true"></radio>
-        </radiogroup>
-        </vertical>
-        <frame height="20" gravity="center">
-            <text text="---------------------------------------------------------------------------------------------------------------------------------" gravity="center"/>
-        </frame>
-        <button id="start" text="开始运行" textColor="blue" textStyle="bold"/>
-        <button id="stop" text="停止运行" />
         </vertical>
         </ScrollView>
     </vertical>
@@ -94,10 +115,14 @@ ui.autoService.on("check", function(checked) {
     }
 });
 
+
 // 当用户回到本界面时，resume事件会被触发
 ui.emitter.on("resume", function() {
     // 此时根据无障碍服务的开启情况，同步开关的状态
     ui.autoService.checked = auto.service != null;
+    //加入悬浮窗日志
+    // app.startActivity("console");
+    // console.show();
 });
 
 ui.start.on("click", function(){
@@ -106,7 +131,6 @@ ui.start.on("click", function(){
         toastLog("请先开启无障碍服务！");
         return;
     }
-
     main();
 });
 
@@ -118,20 +142,20 @@ ui.stop.on("click",function(){
 });
 
 function main() {
-
     // 这里写脚本的主逻辑
     threads.start(function () {
+        
         if(!requestScreenCapture()){
             toastLog("请先开启截图权限，以执行收藏任务！");
             // toastLog("运行结束,脚本自动退出...");
             // exit();
             return;
         }
-        toastLog("主程序开始运行");
         try {
-            //检查无障碍服务是否已经启用,如果没启动,跳转到启动界面,启动后继续执行
-            // auto.waitFor(); 
+            //启动悬浮窗日志
+            // console.show();
             launchApp("学习强国");
+            toastLog("主程序开始运行");
             waitForPackage("cn.xuexi.android");
             sleep(3000);
             toast("开始执行脚本！")
@@ -147,14 +171,15 @@ function main() {
         }
         toastLog("运行结束,脚本自动退出...");
         threads.shutDownAll();
+        // console.hide();
         engines.stopAll();
         exit();
+        
     });
 }
 
 
 var taskInfoList = []; // 装任务列表
-
 
 function doExtraTask(){
     toastLog('执行额外脚本任务....')
@@ -324,16 +349,6 @@ function readArticle(num,time,isLong){
     sleep(1500);
     log("origin_score:"+origin_score)
     var newListView = className("android.widget.ListView").depth(20).findOne();
-    log('进入while前的newListView:'+newListView)
-    // var flag = 0;
-    // while(newListView==null)
-    // {
-    //     log("flag:"+flag)
-    //     newListView = className("android.widget.ListView").depth(20).findOnce();
-    //     flag++;
-    // }
-    // log(flag+"-----"+newListView)
-    
     //阅读文章
     while(num>0){
         newListView = className("android.widget.ListView").depth(20).findOne();
@@ -354,22 +369,15 @@ function readArticle(num,time,isLong){
                             num--;
                             toastLog("进行模拟阅读"+time+"s...剩余阅读篇数："+num);
                             // waitForPackage("cn.xuexi.android");
-                            var f = 1;//防止用户的手机未开启消息通知，导致长时任务在页面上停留过久息屏
                             for(var t=1;t<=time;t++)
                             {
                                 sleep(1000);
                                 left_time = time-t;
                                 if(left_time%5==0)
                                 {
-                                    toast("还剩"+left_time+"s阅读时间...");
-                                    if(f){//加入滑屏操作防止息屏
-                                        scrollDown();
-                                        f = 0;
-                                    }
-                                    else{
-                                        scrollUp();
-                                        f = 1;
-                                    }
+                                    toastLog("还剩"+left_time+"s阅读时间...");
+                                    //未防止息屏的唤醒屏幕操作
+                                    device.wakeUp();
                                 }
                             }
                             back();
@@ -404,7 +412,6 @@ function readArticle(num,time,isLong){
                         }
                     }
                 });
-                // break;
             }
             newListView.scrollDown();
         } 
@@ -537,26 +544,19 @@ function learnVideo(num,read_article_flag,time,isLong){
                                 sleep(1000);
                             }
                             else{
-                                toastLog("当前为wifi环境，自动播放...");
+                                toastLog("自动播放...");
                                 sleep(1000);
                             }
                             toastLog("进行模拟观看"+time+"s...剩余视听："+num+"次");
-                            var f = 1;
                             for(var t=1;t<=time;t++)
                             {
                                 sleep(1000);
                                 left_time = time-t;
                                 if(left_time%5==0)
                                 {
-                                    toast("还剩"+left_time+"s视听时间...");
-                                    if(f){//加入滑屏操作防止息屏
-                                        scrollDown();
-                                        f = 0;
-                                    }
-                                    else{
-                                        scrollUp();
-                                        f = 1;
-                                    }
+                                    toastLog("还剩"+left_time+"s视听时间...");
+                                    //未防止息屏的唤醒屏幕操作
+                                    device.wakeUp();
                                 }
                             }
                             //点击返回
@@ -593,7 +593,6 @@ function learnVideo(num,read_article_flag,time,isLong){
                         }
                     }
                 });
-                // break;
             }
         }
         else
