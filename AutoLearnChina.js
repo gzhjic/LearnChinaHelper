@@ -16,38 +16,47 @@ ui.layout(
         </frame>
         <card w="*" h="60" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
+            <ScrollView>
             <vertical padding="18 8" h="auto">
                 <text text="项目说明文档: (请留意新版本的发布)" textColor="#222222" textSize="14sp"/>
                 <text autoLink="web" text="https://github.com/XiangyuTang/LearnChinaHelper "/>
             </vertical>
+            </ScrollView>
             <View bg="#f44336" h="*" w="10"/>
         </card>
         <card w="*" h="90" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
+            <ScrollView>
             <vertical padding="18 8" h="auto">
                 <text text="1.首次安装请先开启无障碍服务和截图与允许通知权限" textColor="#222222" textSize="14sp"/>
                 <text text="2.开始运行前请先关闭学习强国,由脚本运行后自动启动" textColor="#222222" textSize="14sp"/>
                 <text text="3.脚本执行过程中请勿操作手机" textColor="#222222" textSize="14sp"/>
             </vertical>
+            </ScrollView>
             <View bg="#f44336" h="*" w="10"/>
         </card>
         <card w="*" h="100" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
+            <ScrollView>
             <vertical padding="18 8" h="auto">
                 <text text="当前版本强国助手支持的功能包括：(以下任务预计花费7分钟)" textColor="#222222" textSize="14sp"/>
                 <text text="阅读文章、视听学习、收藏、分享、订阅、评论、本地频道" textColor="#999999" textSize="14sp"/>
             </vertical>
+            </ScrollView>
             <View bg="#4caf50" h="*" w="10"/>
         </card>
         <card w="*" h="80" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
+            <ScrollView>
             <vertical padding="18 8" h="auto">
                 <text text="坚持把学习贯彻习近平总书记系列重要讲话精神作为重大政治任务，认真学习党的先进理论与指导思想，请勿利用本软件投机取巧." textColor="#222222"/>
             </vertical>
+            </ScrollView>
             <View bg="#4caf50" h="*" w="10"/>
         </card>
         <card w="*" h="90" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
+            <ScrollView>
             <vertical padding="18 8" h="auto">
                 <text text="是否执行文章学习时长任务：(预计最多花费12分钟)" textColor="#222222"/>
                 <radiogroup id="long_read">
@@ -55,10 +64,12 @@ ui.layout(
                         <radio  id="no_read" text="否" checked = "true"></radio>
                 </radiogroup>
             </vertical>
+            </ScrollView>
             <View bg="#2196f3" h="*" w="10"/>
         </card>
         <card w="*" h="110" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
+            <ScrollView>
             <vertical padding="18 8" h="auto">
                 <text text="是否执行视听学习时长任务：(建议在wifi环境下执行，预计最多花费18分钟)" textColor="#222222"/>
                 <radiogroup id="long_watch">
@@ -66,6 +77,7 @@ ui.layout(
                         <radio id="no_watch" text="否" checked = "true"></radio>
                 </radiogroup>
             </vertical>
+            </ScrollView>
             <View bg="#2196f3" h="*" w="10"/>
         </card>
         <linear gravity="center">
