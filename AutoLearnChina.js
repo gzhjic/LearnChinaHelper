@@ -25,7 +25,7 @@ ui.layout(
         <card w="*" h="90" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
             <vertical padding="18 8" h="auto">
-                <text text="1.首次安装请先开启无障碍服务和截图权限" textColor="#222222" textSize="14sp"/>
+                <text text="1.首次安装请先开启无障碍服务和截图与允许通知权限" textColor="#222222" textSize="14sp"/>
                 <text text="2.开始运行前请先关闭学习强国,由脚本运行后自动启动" textColor="#222222" textSize="14sp"/>
                 <text text="3.脚本执行过程中请勿操作手机" textColor="#222222" textSize="14sp"/>
             </vertical>
@@ -195,7 +195,7 @@ function doExtraTask(){
             var task = taskInfoList[i];
             if(task.getIntegral < task.targetIntegral&&task.title=='文章学习时长'){
                 rest_num = task.targetIntegral-task.getIntegral;
-                readArticle(rest_num,125,true);
+                readArticle1(rest_num,125,true);
             }
         }
         
@@ -344,15 +344,17 @@ function readArticle(num,time,isLong){
     sleep(1500);
     //点击要闻
     className("android.widget.TextView").text("要闻").findOne().parent().click();
+    sleep(1500);
     //先看右上角总积分，如果看完某文章，积分没变，说明该文章以前看过，不算有效文章，num不减
     var origin_score = id("comm_head_xuexi_score").findOne().getText();
     sleep(1500);
     log("origin_score:"+origin_score)
-    var newListView = className("android.widget.ListView").depth(20).findOne();
+    var newListView = className("android.widget.ListView").depth(20).findOnce(1);
     //阅读文章
     while(num>0){
-        newListView = className("android.widget.ListView").depth(20).findOne();
+        newListView = className("android.widget.ListView").depth(20).findOnce(1);
         log('newListView:'+newListView)
+        sleep(1000);
         if(newListView!=null)
         {
             // log('newListView:'+newListView)
@@ -362,8 +364,9 @@ function readArticle(num,time,isLong){
             {
                 newslist.forEach(function(item,index){
                     if(index&&num>0){//index==0时是linearLayout控件，无法点击，也不是子项要闻
-                        sleep(2000);
+                        sleep(1000);
                         isClick = item.click()//进入新闻内容页
+                        sleep(1500);
                         if(isClick)
                         {
                             num--;
@@ -434,11 +437,10 @@ function readArticle1(num,time,isLong){
     //先看右上角总积分，如果看完某文章，积分没变，说明该文章以前看过，不算有效文章，num不减
     var origin_score = id("comm_head_xuexi_score").findOne().getText();
     log("origin_score:"+origin_score)
-    var newListView = className("android.widget.ListView").depth(20).findOnce(1);
-    
+    var newListView = className("android.widget.ListView").depth(20).findOne();
     //阅读文章
     while(num>0){
-        newListView = className("android.widget.ListView").depth(20).findOnce(1);
+        newListView = className("android.widget.ListView").depth(20).findOne();
         log('newListView:'+newListView)
         if(newListView!=null)
         {
@@ -462,7 +464,9 @@ function readArticle1(num,time,isLong){
                                 left_time = time-t;
                                 if(left_time%5==0)
                                 {
-                                    toast("还剩"+left_time+"s阅读时间...");
+                                    toastLog("还剩"+left_time+"s阅读时间...");
+                                    //未防止息屏的唤醒屏幕操作
+                                    device.wakeUp();
                                 }
                             }
                             back();
