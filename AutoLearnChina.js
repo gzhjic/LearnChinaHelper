@@ -187,10 +187,8 @@ function main() {
         // console.hide();
         engines.stopAll();
         exit();
-        
     });
 }
-
 
 var taskInfoList = []; // 装任务列表
 
@@ -211,7 +209,6 @@ function doExtraTask(){
                 readArticle1(rest_num,125,true);
             }
         }
-        
     }
     if(form.isLongWatch)
     {
@@ -231,16 +228,22 @@ function doExtraTask(){
 }
 
 function getTaskList() {
-    toastLog("执行获取任务列表")
     // 从主页到我的主页
     className("android.widget.TextView").id('comm_head_xuexi_mine').findOne().click();
     sleep(2000);
     // 点击事件在我的积分父控件上
     id("user_item_name").text("学习积分").findOne().parent().click()
     // waitForPackage("cn.xuexi.android")
-    waitForActivity("com.alibaba.lightapp.runtime.activity.CommonWebViewActivity")
-    sleep(3000);
-    toastLog("获取任务列表...")
+    //waitForActivity("com.alibaba.lightapp.runtime.activity.CommonWebViewActivity")
+    toastLog("尝试获取任务列表...")
+    //等待缓冲符号消失
+    sleep(2000);
+    while(className("android.widget.ImageView").exists())
+    {
+        sleep(1000);
+        toastLog("等待加载...")
+    }
+    // sleep(8000);
     // 获取任务列表
     taskInfoList = []; // 重置
     className("android.widget.ListView").findOne().children().forEach(function (child) {
@@ -262,7 +265,7 @@ function getTaskList() {
         }
     });
     if (!taskInfoList.length) {
-        toastLog('获取任务失败！请关闭应用并重启脚本...');
+        toastLog('网络不稳定,获取任务失败！请关闭应用并重启脚本...');
         threads.shutDownAll();
         engines.stopAll();
         exit(); // 有异常退出，结束脚本
