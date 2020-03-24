@@ -114,7 +114,7 @@ ui.emitter.on("options_item_selected", (e, item)=>{
             app.startActivity('console');
             break;
         case "关于":
-            alert("关于", "强国助手 v1.0.5\n1.新增悬浮窗日志显示功能\n2.解决阅读时长任务的bug\n3.优化订阅任务\n4.新增选项菜单");
+            alert("关于", "强国助手 v1.0.5\n1.新增悬浮窗日志显示功能\n2.解决阅读时长任务的bug\n3.新增选项菜单");
             break;
     }
     e.consumed = true;
@@ -914,149 +914,143 @@ function challengeQuiz(){
 
 };
 
-//使用数据库来将已经订阅的存起来
-importClass(android.database.sqlite.SQLiteDatabase);
-importClass(android.media.MediaPlayer);
-/**
- * @function init_database 初始化数据库，为订阅任务做准备
- */
-function init_database() {
-    //数据文件名
-    var dbName = "subscribe.db";
-    //文件路径
-    var path = files.path(dbName);
-    //确保文件存在
-    if (!files.exists(path)) {
-        files.createWithDirs(path);
-    }
-    //创建或打开数据库
-    var db = SQLiteDatabase.openOrCreateDatabase(path, null)
-    //判断表是否存在
-    cursor = db.rawQuery("select name from sqlite_master where type='table' ", null)
-    let flag = false
-    while(cursor.moveToNext()){
-       //遍历出表名
-       let name = cursor.getString(0)
-       if(name==='subscribed_tb')
-       {
-           log("database already exist" )
-           flag=true
-       }
-    }
-    if (!flag) {
-         //创建表
-       let table_sql = "create table subscribed_tb(_id integer primary key autoincrement,subscribed text)"
-       db.execSQL(table_sql);
-    }
-}
+
 /**
  * @function subscribe 订阅任务
  */
-function subscribe(num) {
+function subscribe(num){
     sleep(1000);
     toastLog('开始执行订阅任务');
     // 从主页到我的主页
     id("comm_head_xuexi_mine").text("我的").findOne().click();
-    sleep(1000);
+    sleep(2000);
     //点击订阅控件
     id("my_subscribe_tv").text("订阅").findOne().click();
     // waitForActivity("android.widget.FrameLayout",200);
     // log('过来了');
-    sleep(1000);
-    //初始化数据库
-    init_database();
+    sleep(3000);
+    
     //在我的订阅里面找到所有订阅号，存起来
     var subscribed_accounts = [];
-    //打开数据库
-    var dbName = "subscribe.db";
-    //文件路径
-    var path = files.path(dbName);
-    var db = SQLiteDatabase.openOrCreateDatabase(path, null);
-    //db.execSQL("delete from subscribed_tb")
-    var list_view = className("android.widget.ListView").depth(11).findOne();
-    // log(list_view)
-    var bottom_flag = 0;
-    let cursor = db.rawQuery("select count(1) from subscribed_tb", null);
-    cursor.moveToNext()
-    let count = cursor.getString(0)
-    //将所有已经订阅的存起来
-    while(list_view!=null && count == 0)
-    {
-        sleep(1000);
-        var frameLayoutList = list_view.children();
-        // log('frameLayoutList:'+frameLayoutList)
-        frameLayoutList.forEach(function(item,index){
-            if(item.className()=='android.widget.FrameLayout')
-            {
-                // log(item)
-                var account_name = item.find(className("android.widget.TextView"));
-                // log('已订阅：'+account_name[0].text())
-                //将已订阅的数据插入数据库
-                let insertSql = "insert into subscribed_tb values (null,'"+account_name[0].text()+"')"
-                //query="select * from tiku"
-                db.execSQL(insertSql);
-                log(insertSql )
-            }
-            else if(item.className()=='android.widget.LinearLayout')//遍历到底了
-            {
-                bottom_flag = 1;
-                return;
-            }
-        });
-        if(bottom_flag)
+    //如果没有订阅任何订阅号，那直接点击添加
+    if(id("no_content_text").exists()){
+        //点击添加
+        className("android.widget.TextView").text("添加").findOne().click();
+        //在添加里面逐一扫描每个订阅号是否在上面的已订阅中，如果没匹配到，则订阅这个公众号,订阅num个即可
+        accounts_pool = className("android.widget.ListView").depth(13).findOne();
+        var bottom_flag = 0;
+        while(accounts_pool!=null&&num>0)
         {
-            break;
-        }
-        list_view.scrollDown();
-        sleep(1000);
-        list_view = className("android.widget.ListView").depth(11).findOne();
-    }
-    //log(subscribed_accounts)
-    //点击添加
-    className("android.widget.TextView").text("添加").findOne().click();
-    // 在添加里面逐一扫描每个订阅号是否在上面的已订阅中，如果没匹配到，则订阅这个公众号,订阅num个即可
-    let accounts_pool = className("android.widget.ListView").depth(13).findOne();
-    var bottom_flag = 0;
-    while(accounts_pool!=null&&num>0)
-    {
-        sleep(1000);
-        var frameLayoutList = accounts_pool.children();
-        frameLayoutList.forEach(function(item,index){
-            if(item.className()=='android.widget.FrameLayout')
-            {
-                var account_name = item.find(className("android.widget.TextView"));
-                //查看数据库中是否已经存在
-                let cursor = db.rawQuery("select subscribed from subscribed_tb where subscribed='" + account_name[0].text()+"'", null)
-                //如果数据库中没有,则订阅
-                if (cursor.getCount() == 0 && num>0) {
-                    num--;
-                    //subscribed_accounts.push(account_name[0].text());
-                    subscribe_icon = item.find(className("android.widget.LinearLayout"))[1];
-                    log("subscribe_:"+account_name[0].text())
-                    toastLog("正在订阅...");
-                    subscribe_icon.click();
-                    db.execSQL("insert into subscribed_tb values(null,'"+account_name[0].text() +"')")
-                    sleep(1000);
-                }
-                /* if(num>0&&subscribed_accounts.indexOf(account_name[0].text())==-1)//说明数组中不存在这个元素,则订阅他
+            sleep(1000);
+            var frameLayoutList = accounts_pool.children();
+            frameLayoutList.forEach(function(item,index){
+                if(item.className()=='android.widget.FrameLayout')
                 {
-                    
-                } */
+                    var account_name = item.find(className("android.widget.TextView"));
+                    if(num>0&&subscribed_accounts.indexOf(account_name[0].text())==-1)//说明数组中不存在这个元素,则订阅他
+                    {
+                        num--;
+                        subscribed_accounts.push(account_name[0].text());
+                        subscribe_icon = item.find(className("android.widget.LinearLayout"))[1];
+                        // log("subscribe_icon:"+subscribe_icon)
+                        toastLog("正在订阅...");
+                        subscribe_icon.click();
+                        sleep(2000);
+                    }
+                    else if(item.className()=='android.widget.LinearLayout')//遍历到底了
+                    {
+                        bottom_flag = 1;
+                        return;
+                    }
+                }
+            });
+            if(bottom_flag)
+            {
+                toastLog("强国号都已经订阅完啦...");
+                break;
+            }
+            accounts_pool.scrollDown();
+            sleep(2000);
+            accounts_pool = className("android.widget.ListView").depth(13).findOne();
+        }
+        
+    }
+    else//如果曾经订阅过，那么需要先找到订阅了哪些
+    {
+        var list_view = className("android.widget.ListView").depth(11).findOne();
+        // log(list_view)
+        var bottom_flag = 0;
+        while(list_view!=null)
+        {
+            sleep(1000);
+            var frameLayoutList = list_view.children();
+            // log('frameLayoutList:'+frameLayoutList)
+            frameLayoutList.forEach(function(item,index){
+                if(item.className()=='android.widget.FrameLayout')
+                {
+                    // log(item)
+                    var account_name = item.find(className("android.widget.TextView"));
+                    // log('已订阅：'+account_name[0].text())
+                    if(subscribed_accounts.indexOf(account_name[0].text())==-1)//说明数组中不存在这个元素
+                    {
+                        subscribed_accounts.push(account_name[0].text());
+                    }
+                }
                 else if(item.className()=='android.widget.LinearLayout')//遍历到底了
                 {
                     bottom_flag = 1;
                     return;
                 }
+            });
+            if(bottom_flag)
+            {
+                break;
             }
-        });
-        if(bottom_flag)
-        {
-            toastLog("强国号都已经订阅完啦...");
-            break;
+            list_view.scrollDown();
+            sleep(2000);
+            list_view = className("android.widget.ListView").depth(11).findOne();
         }
-        accounts_pool.scrollDown();
-        sleep(1000);
+        log(subscribed_accounts)
+
+        //点击添加
+        className("android.widget.TextView").text("添加").findOne().click();
+        //在添加里面逐一扫描每个订阅号是否在上面的已订阅中，如果没匹配到，则订阅这个公众号,订阅num个即可
         accounts_pool = className("android.widget.ListView").depth(13).findOne();
+        var bottom_flag = 0;
+        while(accounts_pool!=null&&num>0)
+        {
+            sleep(1000);
+            var frameLayoutList = accounts_pool.children();
+            frameLayoutList.forEach(function(item,index){
+                if(item.className()=='android.widget.FrameLayout')
+                {
+                    var account_name = item.find(className("android.widget.TextView"));
+                    if(num>0&&subscribed_accounts.indexOf(account_name[0].text())==-1)//说明数组中不存在这个元素,则订阅他
+                    {
+                        num--;
+                        subscribed_accounts.push(account_name[0].text());
+                        subscribe_icon = item.find(className("android.widget.LinearLayout"))[1];
+                        // log("subscribe_icon:"+subscribe_icon)
+                        toastLog("正在订阅...");
+                        subscribe_icon.click();
+                        sleep(2000);
+                    }
+                    else if(item.className()=='android.widget.LinearLayout')//遍历到底了
+                    {
+                        bottom_flag = 1;
+                        return;
+                    }
+                }
+            });
+            if(bottom_flag)
+            {
+                toastLog("强国号都已经订阅完啦...");
+                break;
+            }
+            accounts_pool.scrollDown();
+            sleep(2000);
+            accounts_pool = className("android.widget.ListView").depth(13).findOne();
+        }
     }
     toastLog("订阅任务执行结束！d==(￣▽￣*)b");
     back();//回到 我的订阅
@@ -1065,5 +1059,4 @@ function subscribe(num) {
     sleep(1000);
     back();//回到学习首页
     sleep(1000);
-}
-
+};
