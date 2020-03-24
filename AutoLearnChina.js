@@ -6,7 +6,7 @@ var form = {
 ui.layout(
     <vertical>
         <appbar>
-            <toolbar title="强国助手 V1.0.3"/>
+            <toolbar title="强国助手 V1.0.4"/>
         </appbar>
         <Switch id="autoService" text="无障碍服务" checked="{{auto.service != null}}" padding="8 8 8 8" textSize="15sp"/>
         <ScrollView>
@@ -14,7 +14,7 @@ ui.layout(
         <frame height="40" gravity="center">
             <text text="*注意*" gravity="center" textSize="18sp" textColor="red" textStyle="bold"/>
         </frame>
-        <card w="*" h="60" margin="10 5" cardCornerRadius="2dp"
+        <card w="*" h="*" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
             <ScrollView>
             <vertical padding="18 8" h="auto">
@@ -24,7 +24,7 @@ ui.layout(
             </ScrollView>
             <View bg="#f44336" h="*" w="10"/>
         </card>
-        <card w="*" h="90" margin="10 5" cardCornerRadius="2dp"
+        <card w="*" h="*" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
             <ScrollView>
             <vertical padding="18 8" h="auto">
@@ -35,7 +35,7 @@ ui.layout(
             </ScrollView>
             <View bg="#f44336" h="*" w="10"/>
         </card>
-        <card w="*" h="100" margin="10 5" cardCornerRadius="2dp"
+        <card w="*" h="*" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
             <ScrollView>
             <vertical padding="18 8" h="auto">
@@ -45,7 +45,7 @@ ui.layout(
             </ScrollView>
             <View bg="#4caf50" h="*" w="10"/>
         </card>
-        <card w="*" h="80" margin="10 5" cardCornerRadius="2dp"
+        <card w="*" h="*" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
             <ScrollView>
             <vertical padding="18 8" h="auto">
@@ -54,7 +54,7 @@ ui.layout(
             </ScrollView>
             <View bg="#4caf50" h="*" w="10"/>
         </card>
-        <card w="*" h="90" margin="10 5" cardCornerRadius="2dp"
+        <card w="*" h="*" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
             <ScrollView>
             <vertical padding="18 8" h="auto">
@@ -67,7 +67,7 @@ ui.layout(
             </ScrollView>
             <View bg="#2196f3" h="*" w="10"/>
         </card>
-        <card w="*" h="110" margin="10 5" cardCornerRadius="2dp"
+        <card w="*" h="*" margin="10 5" cardCornerRadius="2dp"
             cardElevation="1dp" gravity="center_vertical">
             <ScrollView>
             <vertical padding="18 8" h="auto">
@@ -173,6 +173,7 @@ function main() {
             toast("开始执行脚本！")
             getTaskList(); // 获取任务列表
             doUnfinishedTask(); //执行当日未完成的任务
+            getTaskList(); // 重新获取任务列表,装载最新的阅读和视听时长剩余次数
             doExtraTask();
             back();//回到手机主页
             sleep(2000);
@@ -437,7 +438,7 @@ function readArticle(num,time,isLong){
     sleep(1000);
 };
 
-//备份
+//为阅读时长任务单独写的方法
 function readArticle1(num,time,isLong){
     sleep(1000);
     toastLog('开始执行阅读文章任务...')
